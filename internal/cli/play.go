@@ -28,7 +28,7 @@ func runPlay(cmd *cobra.Command, args []string) error {
 	renderer.RenderLevel(result.Level)
 
 	// 渲染输入提示
-	renderer.RenderPrompt()
+	renderer.RenderPrompt(game.GetPlatform())
 
 	// 等待用户输入并验证
 	submitResult, err := game.SubmitAnswer()

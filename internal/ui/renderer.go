@@ -40,9 +40,16 @@ func (r *Renderer) RenderLevel(level *engine.Level) {
 }
 
 // RenderPrompt 渲染输入提示
-func (r *Renderer) RenderPrompt() {
-	fmt.Println(PromptStyle.Render("🎯 请输入快捷键组合..."))
-	fmt.Println(SubtitleStyle.Render("(按下你认为正确的快捷键)"))
+func (r *Renderer) RenderPrompt(platform string) {
+	fmt.Println(PromptStyle.Render("🎯 请输入快捷键组合:"))
+
+	var hint string
+	if platform == "macos" {
+		hint = "(格式示例: Cmd+S, Ctrl+Shift+P, Esc)"
+	} else {
+		hint = "(格式示例: Ctrl+S, Ctrl+Shift+P, Esc)"
+	}
+	fmt.Println(SubtitleStyle.Render(hint))
 	fmt.Println()
 }
 

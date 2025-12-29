@@ -149,16 +149,16 @@ type SubmitResult struct {
 	GameCompleted bool
 }
 
-// SubmitAnswer 提交答案（捕获按键并验证）
+// SubmitAnswer 提交答案（读取文本输入并验证）
 func (g *Game) SubmitAnswer() (*SubmitResult, error) {
 	if g.state != StatePlaying {
 		return nil, errors.New("当前没有正在进行的关卡")
 	}
 
-	// 捕获并验证按键
-	verifyResult, err := g.verifier.CaptureAndVerify()
+	// 读取用户输入并验证
+	verifyResult, err := g.verifier.ReadAndVerify()
 	if err != nil {
-		return nil, fmt.Errorf("按键捕获失败: %w", err)
+		return nil, fmt.Errorf("读取输入失败: %w", err)
 	}
 
 	score := g.calculateScore(verifyResult.Correct)

@@ -1,22 +1,20 @@
 package engine
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"runtime"
 	"sort"
 	"strings"
 	"time"
-
-	"github.com/eiannone/keyboard"
 )
 
 // KeyVerifier 按键验证器
 type KeyVerifier struct {
-	platform      string
-	currentLevel  *Level
-	capturedKeys  []string
-	modifiersHeld map[string]bool
-	startTime     time.Time
+	platform     string
+	currentLevel *Level
+	startTime    time.Time
 }
 
 // VerifyResult 验证结果
@@ -30,8 +28,7 @@ type VerifyResult struct {
 // NewKeyVerifier 创建按键验证器
 func NewKeyVerifier() *KeyVerifier {
 	return &KeyVerifier{
-		platform:      detectPlatform(),
-		modifiersHeld: make(map[string]bool),
+		platform: detectPlatform(),
 	}
 }
 
@@ -55,8 +52,6 @@ func (v *KeyVerifier) GetPlatform() string {
 // SetLevel 设置当前关卡
 func (v *KeyVerifier) SetLevel(level *Level) {
 	v.currentLevel = level
-	v.capturedKeys = nil
-	v.modifiersHeld = make(map[string]bool)
 }
 
 // GetExpectedKeys 获取当前平台的期望按键
@@ -75,231 +70,166 @@ func (v *KeyVerifier) GetExpectedKeys() []string {
 	}
 }
 
-// CaptureAndVerify 捕获用户按键并验证
-func (v *KeyVerifier) CaptureAndVerify() (VerifyResult, error) {
-	if err := keyboard.Open(); err != nil {
-		return VerifyResult{}, fmt.Errorf("无法打开键盘监听: %w", err)
-	}
-	defer keyboard.Close()
+// GetExpectedKeysFormatted 获取格式化的期望按键字符串
+func (v *KeyVerifier) GetExpectedKeysFormatted() string {
+	return FormatKeyCombination(v.GetExpectedKeys())
+}
 
+// ReadAndVerify 读取用户文本输入并验证
+func (v *KeyVerifier) ReadAndVerify() (VerifyResult, error) {
 	v.startTime = time.Now()
-	v.capturedKeys = nil
-	v.modifiersHeld = make(map[string]bool)
 
-	// 等待用户输入完整的快捷键组合
-	for {
-		char, key, err := keyboard.GetKey()
-		if err != nil {
-			return VerifyResult{}, fmt.Errorf("读取按键失败: %w", err)
-		}
-
-		// 处理按键
-		keyStr := v.parseKey(char, key)
-		if keyStr == "" {
-			continue
-		}
-
-		// 检查是否是修饰键
-		if isModifier(keyStr) {
-			v.modifiersHeld[keyStr] = true
-			continue
-		}
-
-		// 非修饰键，构建完整的组合
-		v.capturedKeys = v.buildKeyCombination(keyStr)
-		break
+	// 读取用户输入
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("> ")
+	input, err := reader.ReadString('\n')
+	if err != nil {
+		return VerifyResult{}, fmt.Errorf("读取输入失败: %w", err)
 	}
 
-	// 验证按键组合
-	result := v.verify()
+	// 清理输入
+	input = strings.TrimSpace(input)
+
+	// 解析用户输入的按键组合
+	userKeys := ParseKeyInput(input)
+
+	// 验证
+	result := v.verify(userKeys)
 	result.ResponseTime = time.Since(v.startTime)
 
 	return result, nil
 }
 
-// parseKey 解析按键
-func (v *KeyVerifier) parseKey(char rune, key keyboard.Key) string {
-	// 处理特殊键
-	switch key {
-	case keyboard.KeySpace:
-		return "Space"
-	case keyboard.KeyEnter:
-		return "Enter"
-	case keyboard.KeyEsc:
-		return "Esc"
-	case keyboard.KeyArrowUp:
-		return "Up"
-	case keyboard.KeyArrowDown:
-		return "Down"
-	case keyboard.KeyArrowLeft:
-		return "Left"
-	case keyboard.KeyArrowRight:
-		return "Right"
-	case keyboard.KeyTab:
-		return "Tab"
-	case keyboard.KeyBackspace, keyboard.KeyBackspace2:
-		return "Backspace"
-	case keyboard.KeyDelete:
-		return "Delete"
-	case keyboard.KeyHome:
-		return "Home"
-	case keyboard.KeyEnd:
-		return "End"
-	case keyboard.KeyPgup:
-		return "PageUp"
-	case keyboard.KeyPgdn:
-		return "PageDown"
-	case keyboard.KeyF1:
-		return "F1"
-	case keyboard.KeyF2:
-		return "F2"
-	case keyboard.KeyF3:
-		return "F3"
-	case keyboard.KeyF4:
-		return "F4"
-	case keyboard.KeyF5:
-		return "F5"
-	case keyboard.KeyF6:
-		return "F6"
-	case keyboard.KeyF7:
-		return "F7"
-	case keyboard.KeyF8:
-		return "F8"
-	case keyboard.KeyF9:
-		return "F9"
-	case keyboard.KeyF10:
-		return "F10"
-	case keyboard.KeyF11:
-		return "F11"
-	case keyboard.KeyF12:
-		return "F12"
-	case keyboard.KeyCtrlA:
-		v.modifiersHeld["Ctrl"] = true
-		return "A"
-	case keyboard.KeyCtrlB:
-		v.modifiersHeld["Ctrl"] = true
-		return "B"
-	case keyboard.KeyCtrlC:
-		v.modifiersHeld["Ctrl"] = true
-		return "C"
-	case keyboard.KeyCtrlD:
-		v.modifiersHeld["Ctrl"] = true
-		return "D"
-	case keyboard.KeyCtrlE:
-		v.modifiersHeld["Ctrl"] = true
-		return "E"
-	case keyboard.KeyCtrlF:
-		v.modifiersHeld["Ctrl"] = true
-		return "F"
-	case keyboard.KeyCtrlG:
-		v.modifiersHeld["Ctrl"] = true
-		return "G"
-	// Note: KeyCtrlH (8) = KeyBackspace, KeyCtrlI (9) = KeyTab - handled above
-	case keyboard.KeyCtrlJ:
-		v.modifiersHeld["Ctrl"] = true
-		return "J"
-	case keyboard.KeyCtrlK:
-		v.modifiersHeld["Ctrl"] = true
-		return "K"
-	case keyboard.KeyCtrlL:
-		v.modifiersHeld["Ctrl"] = true
-		return "L"
-	case keyboard.KeyCtrlN:
-		v.modifiersHeld["Ctrl"] = true
-		return "N"
-	case keyboard.KeyCtrlO:
-		v.modifiersHeld["Ctrl"] = true
-		return "O"
-	case keyboard.KeyCtrlP:
-		v.modifiersHeld["Ctrl"] = true
-		return "P"
-	case keyboard.KeyCtrlQ:
-		v.modifiersHeld["Ctrl"] = true
-		return "Q"
-	case keyboard.KeyCtrlR:
-		v.modifiersHeld["Ctrl"] = true
-		return "R"
-	case keyboard.KeyCtrlS:
-		v.modifiersHeld["Ctrl"] = true
-		return "S"
-	case keyboard.KeyCtrlT:
-		v.modifiersHeld["Ctrl"] = true
-		return "T"
-	case keyboard.KeyCtrlU:
-		v.modifiersHeld["Ctrl"] = true
-		return "U"
-	case keyboard.KeyCtrlV:
-		v.modifiersHeld["Ctrl"] = true
-		return "V"
-	case keyboard.KeyCtrlW:
-		v.modifiersHeld["Ctrl"] = true
-		return "W"
-	case keyboard.KeyCtrlX:
-		v.modifiersHeld["Ctrl"] = true
-		return "X"
-	case keyboard.KeyCtrlY:
-		v.modifiersHeld["Ctrl"] = true
-		return "Y"
-	case keyboard.KeyCtrlZ:
-		v.modifiersHeld["Ctrl"] = true
-		return "Z"
+// ParseKeyInput 解析用户输入的按键组合文本
+// 支持格式: "Cmd+S", "Ctrl+Shift+P", "Esc", ":wq" 等
+func ParseKeyInput(input string) []string {
+	input = strings.TrimSpace(input)
+	if input == "" {
+		return nil
 	}
 
-	// 处理普通字符
-	if char != 0 {
-		return strings.ToUpper(string(char))
+	// 处理常见分隔符
+	var keys []string
+
+	// 尝试用 + 分隔
+	if strings.Contains(input, "+") {
+		parts := strings.Split(input, "+")
+		for _, p := range parts {
+			p = strings.TrimSpace(p)
+			if p != "" {
+				keys = append(keys, normalizeKeyName(p))
+			}
+		}
+	} else if strings.Contains(input, "-") {
+		// 也支持 Cmd-S 这种格式
+		parts := strings.Split(input, "-")
+		for _, p := range parts {
+			p = strings.TrimSpace(p)
+			if p != "" {
+				keys = append(keys, normalizeKeyName(p))
+			}
+		}
+	} else if strings.Contains(input, " ") {
+		// 空格分隔: "Cmd S"
+		parts := strings.Fields(input)
+		for _, p := range parts {
+			keys = append(keys, normalizeKeyName(p))
+		}
+	} else {
+		// 单个按键或 Vim 命令（如 :wq, dd, yy）
+		// 对于 Vim 命令，逐字符分解
+		if strings.HasPrefix(input, ":") || isVimCommand(input) {
+			for _, ch := range input {
+				keys = append(keys, strings.ToUpper(string(ch)))
+			}
+		} else {
+			keys = append(keys, normalizeKeyName(input))
+		}
 	}
 
-	return ""
+	return keys
 }
 
-// isModifier 判断是否为修饰键
-func isModifier(key string) bool {
-	modifiers := []string{"Ctrl", "Alt", "Shift", "Cmd", "Meta", "Option"}
-	for _, m := range modifiers {
-		if strings.EqualFold(key, m) {
+// isVimCommand 检查是否是 Vim 命令
+func isVimCommand(input string) bool {
+	vimCommands := []string{"dd", "yy", "pp", "gg", "dw", "cw", "ci", "di"}
+	lower := strings.ToLower(input)
+	for _, cmd := range vimCommands {
+		if lower == cmd {
 			return true
 		}
 	}
 	return false
 }
 
-// buildKeyCombination 构建按键组合
-func (v *KeyVerifier) buildKeyCombination(mainKey string) []string {
-	var combo []string
+// normalizeKeyName 标准化按键名称
+func normalizeKeyName(key string) string {
+	key = strings.TrimSpace(key)
+	lower := strings.ToLower(key)
 
-	// 按固定顺序添加修饰键
-	modifierOrder := []string{"Ctrl", "Cmd", "Alt", "Shift"}
-	for _, mod := range modifierOrder {
-		if v.modifiersHeld[mod] {
-			combo = append(combo, mod)
-		}
+	// 修饰键标准化
+	switch lower {
+	case "cmd", "command", "⌘":
+		return "Cmd"
+	case "ctrl", "control", "^":
+		return "Ctrl"
+	case "alt", "option", "opt", "⌥":
+		return "Alt"
+	case "shift", "⇧":
+		return "Shift"
+	case "esc", "escape":
+		return "Esc"
+	case "enter", "return", "↵":
+		return "Enter"
+	case "space", "空格":
+		return "Space"
+	case "tab", "⇥":
+		return "Tab"
+	case "backspace", "delete", "⌫":
+		return "Backspace"
+	case "up", "↑":
+		return "Up"
+	case "down", "↓":
+		return "Down"
+	case "left":
+		return "Left"
+	case "right", "→":
+		return "Right"
 	}
 
-	combo = append(combo, mainKey)
-	return combo
+	// 功能键
+	if len(lower) >= 2 && lower[0] == 'f' {
+		return strings.ToUpper(key)
+	}
+
+	// 普通字母转大写
+	if len(key) == 1 {
+		return strings.ToUpper(key)
+	}
+
+	// 其他情况保持首字母大写
+	return strings.Title(lower)
 }
 
 // verify 验证按键组合
-func (v *KeyVerifier) verify() VerifyResult {
+func (v *KeyVerifier) verify(userKeys []string) VerifyResult {
 	expected := v.GetExpectedKeys()
-	actual := v.capturedKeys
 
 	result := VerifyResult{
 		Expected: expected,
-		Actual:   actual,
+		Actual:   userKeys,
 	}
 
 	// 标准化并比较
 	result.Correct = keysEqual(
 		normalizeKeys(expected),
-		normalizeKeys(actual),
+		normalizeKeys(userKeys),
 	)
 
 	return result
 }
 
-// normalizeKeys 标准化按键列表
+// normalizeKeys 标准化按键列表用于比较
 func normalizeKeys(keys []string) []string {
 	if len(keys) == 0 {
 		return keys
@@ -310,8 +240,8 @@ func normalizeKeys(keys []string) []string {
 		normalized[i] = strings.ToLower(strings.TrimSpace(k))
 	}
 
-	// 只对修饰键排序，主键保持在最后
-	if len(normalized) > 1 {
+	// 对于组合键，修饰键排序，主键保持在最后
+	if len(normalized) > 1 && !isVimSequence(keys) {
 		modifiers := normalized[:len(normalized)-1]
 		sort.Strings(modifiers)
 		for i, m := range modifiers {
@@ -320,6 +250,20 @@ func normalizeKeys(keys []string) []string {
 	}
 
 	return normalized
+}
+
+// isVimSequence 判断是否是 Vim 顺序键
+func isVimSequence(keys []string) bool {
+	if len(keys) == 0 {
+		return false
+	}
+
+	// 如果第一个键是 : 或者是单个小写字母，可能是 Vim 序列
+	first := keys[0]
+	if first == ":" || (len(first) == 1 && first >= "a" && first <= "z") {
+		return true
+	}
+	return false
 }
 
 // keysEqual 比较两个按键列表是否相等
@@ -337,5 +281,14 @@ func keysEqual(a, b []string) bool {
 
 // FormatKeyCombination 格式化按键组合为可读字符串
 func FormatKeyCombination(keys []string) string {
-	return strings.Join(keys, " + ")
+	if len(keys) == 0 {
+		return ""
+	}
+
+	// Vim 命令直接连接
+	if len(keys) > 0 && (keys[0] == ":" || isVimSequence(keys)) {
+		return strings.Join(keys, "")
+	}
+
+	return strings.Join(keys, "+")
 }
