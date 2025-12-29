@@ -1,0 +1,30 @@
+id: "V01"
+name: "进入普通模式"
+category: "mode"
+difficulty: "beginner"
+profile: "vim"
+
+description: |
+  你正在编辑代码（插入模式），现在需要退出编辑状态，
+  返回到 Vim 的普通模式（Normal Mode）以使用移动和命令。
+  请按下正确的按键进入普通模式。
+
+scenario: "normal_mode"
+
+expected_keys:
+  macos: ["Esc"]
+  windows: ["Esc"]
+  linux: ["Esc"]
+
+hints:
+  - "这是 Vim 最基础的操作之一"
+  - "这个键在键盘的左上角"
+  - "答案是 Esc（Escape）键"
+
+tips: |
+  💡 助记技巧：Escape = 逃离编辑模式！
+  这是 Vim 用户最常按的键之一。
+
+prerequisites: []
+
+tags: ["vim", "mode", "essential"]

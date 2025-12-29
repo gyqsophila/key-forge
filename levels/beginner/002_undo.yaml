@@ -1,0 +1,28 @@
+id: "002"
+name: "撤销"
+category: "edit"
+difficulty: "beginner"
+profile: "both"
+
+description: |
+  你不小心删除了一段重要的代码，需要撤销上一步操作。
+  请输入正确的快捷键组合来撤销。
+
+scenario: "undo"
+
+expected_keys:
+  macos: ["Cmd", "Z"]
+  windows: ["Ctrl", "Z"]
+  linux: ["Ctrl", "Z"]
+
+hints:
+  - "这是一个非常常用的操作，用于恢复到之前的状态"
+  - "想一想，哪个字母代表 '撤回' 或 '回退'？"
+  - "答案是 Cmd+Z (macOS) 或 Ctrl+Z (Windows/Linux)"
+
+tips: |
+  💡 助记技巧：Z 是字母表的最后一个，象征 "回到过去"！
+
+prerequisites: ["001"]
+
+tags: ["edit", "basic", "essential"]

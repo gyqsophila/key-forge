@@ -1,0 +1,28 @@
+id: "004"
+name: "复制"
+category: "edit"
+difficulty: "beginner"
+profile: "both"
+
+description: |
+  你选中了一段代码，需要复制它以便在其他地方使用。
+  请输入正确的快捷键组合来复制选中的内容。
+
+scenario: "copy"
+
+expected_keys:
+  macos: ["Cmd", "C"]
+  windows: ["Ctrl", "C"]
+  linux: ["Ctrl", "C"]
+
+hints:
+  - "这是最常用的操作之一"
+  - "C 代表什么英文单词？"
+  - "答案是 Cmd+C (macOS) 或 Ctrl+C (Windows/Linux)"
+
+tips: |
+  💡 助记技巧：C = Copy，简单直接！
+
+prerequisites: ["001"]
+
+tags: ["edit", "basic", "essential", "clipboard"]

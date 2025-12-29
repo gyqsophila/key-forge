@@ -1,0 +1,29 @@
+id: "005"
+name: "粘贴"
+category: "edit"
+difficulty: "beginner"
+profile: "both"
+
+description: |
+  你已经复制了一段代码，现在需要把它粘贴到光标位置。
+  请输入正确的快捷键组合来粘贴剪贴板内容。
+
+scenario: "paste"
+
+expected_keys:
+  macos: ["Cmd", "V"]
+  windows: ["Ctrl", "V"]
+  linux: ["Ctrl", "V"]
+
+hints:
+  - "这是复制操作的配对操作"
+  - "V 键在键盘上紧挨着 C 键"
+  - "答案是 Cmd+V (macOS) 或 Ctrl+V (Windows/Linux)"
+
+tips: |
+  💡 助记技巧：V 可以想象成一个向下的箭头 ↓，表示 "放下" 内容！
+  注意 C 和 V 在键盘上相邻，方便连续操作。
+
+prerequisites: ["004"]
+
+tags: ["edit", "basic", "essential", "clipboard"]

@@ -1,0 +1,28 @@
+id: "001"
+name: "保存文件"
+category: "file"
+difficulty: "beginner"
+profile: "both"
+
+description: |
+  你刚写完一段代码，现在需要保存文件。
+  请输入正确的快捷键组合来保存当前文件。
+
+scenario: "save_file"
+
+expected_keys:
+  macos: ["Cmd", "S"]
+  windows: ["Ctrl", "S"]
+  linux: ["Ctrl", "S"]
+
+hints:
+  - "这是一个非常基础的操作，几乎所有编辑器都使用相同的快捷键"
+  - "在 macOS 上，Command 键替代了 Windows/Linux 上的 Ctrl 键"
+  - "答案是 Cmd+S (macOS) 或 Ctrl+S (Windows/Linux)"
+
+tips: |
+  💡 助记技巧：S = Save，简单直接！
+
+prerequisites: []
+
+tags: ["file", "basic", "essential"]

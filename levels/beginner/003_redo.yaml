@@ -1,0 +1,30 @@
+id: "003"
+name: "重做"
+category: "edit"
+difficulty: "beginner"
+profile: "both"
+
+description: |
+  你刚才撤销了太多步，需要重做（取消撤销）。
+  请输入正确的快捷键组合来重做上一步操作。
+
+scenario: "redo"
+
+expected_keys:
+  macos: ["Cmd", "Shift", "Z"]
+  windows: ["Ctrl", "Y"]
+  linux: ["Ctrl", "Y"]
+
+hints:
+  - "重做是撤销的逆操作"
+  - "在 macOS 上，通常在撤销快捷键基础上加 Shift"
+  - "macOS: Cmd+Shift+Z, Windows/Linux: Ctrl+Y"
+
+tips: |
+  💡 助记技巧：
+  - macOS: Shift 表示 "反向"，所以 Cmd+Shift+Z = 反向撤销 = 重做
+  - Windows: Y 看起来像是向前的箭头 ↑
+
+prerequisites: ["002"]
+
+tags: ["edit", "basic", "essential"]

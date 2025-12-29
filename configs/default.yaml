@@ -1,0 +1,14 @@
+# KeyForge 默认配置
+
+# 键位配置
+profile: vscode  # vscode | vim
+
+# 平台设置
+platform: auto   # auto | macos | windows | linux
+
+# 语言设置
+language: zh-CN
+
+# 提示设置
+hints:
+  show_tips: true  # 答对后是否显示助记技巧
