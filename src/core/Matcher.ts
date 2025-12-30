@@ -47,7 +47,15 @@ export class Matcher {
         }
 
         // 2. Content Based Verification
-        // if (currentLevel.trigger.type === 'content') ...
+        if (currentLevel.trigger.type === 'content' && currentLevel.trigger.matchContent) {
+            // Normalize: remove CR (\r) for consistent comparison across platforms
+            const docText = document.getText().replace(/\r/g, '').trim();
+            const expectedText = currentLevel.trigger.matchContent.replace(/\r/g, '').trim();
+
+            if (docText === expectedText) {
+                this.onSuccess(currentLevel.title);
+            }
+        }
     }
 
     public manualCheckCommand(commandId: string) {

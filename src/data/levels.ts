@@ -33,8 +33,8 @@ export const levels: Level[] = [
             initialSelection: { line: 1, character: 5 }
         },
         trigger: {
-            type: "command",
-            commandId: "undo"
+            type: "content",
+            matchContent: "这是一行重要的文字。\n快把它删掉，然后撤销回来！"
         },
         hints: [
             "macOS: Cmd+Z",
