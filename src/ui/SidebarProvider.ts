@@ -7,7 +7,7 @@ export class SidebarProvider implements vscode.TreeDataProvider<LevelItem> {
     readonly onDidChangeTreeData: vscode.Event<LevelItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
     constructor(private levelManager: LevelManager) {
-        // 当关卡变化时刷新列表高亮状态 (将来实现)
+        this.levelManager.onDidChangeLevel(() => this.refresh());
     }
 
     getTreeItem(element: LevelItem): vscode.TreeItem {

@@ -21,7 +21,6 @@ export function activate(context: vscode.ExtensionContext) {
             // 默认开始第一关
             levelManager.startLevel(levelManager.getCurrentLevel().id);
         }
-        sidebarProvider.refresh();
     });
 
     // 注册命令：重置
