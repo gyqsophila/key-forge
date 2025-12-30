@@ -39,6 +39,24 @@ func (r *Renderer) RenderLevel(level *engine.Level) {
 	fmt.Println()
 }
 
+// RenderPlayHelp 渲染 play 后的帮助信息
+func (r *Renderer) RenderPlayHelp(platform string) {
+	fmt.Println(PromptStyle.Render("🎯 请提交你的答案:"))
+	fmt.Println()
+
+	var example string
+	if platform == "macos" {
+		example = "keyforge submit Cmd+S"
+	} else {
+		example = "keyforge submit Ctrl+S"
+	}
+
+	fmt.Println(SubtitleStyle.Render(fmt.Sprintf("  示例: %s", example)))
+	fmt.Println(SubtitleStyle.Render("  提示: keyforge hint"))
+	fmt.Println(SubtitleStyle.Render("  答案: keyforge answer"))
+	fmt.Println()
+}
+
 // RenderPrompt 渲染输入提示
 func (r *Renderer) RenderPrompt(platform string) {
 	fmt.Println(PromptStyle.Render("🎯 请输入快捷键组合:"))

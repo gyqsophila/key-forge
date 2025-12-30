@@ -161,6 +161,23 @@ func (g *Game) SubmitAnswer() (*SubmitResult, error) {
 		return nil, fmt.Errorf("读取输入失败: %w", err)
 	}
 
+	return g.processVerifyResult(verifyResult)
+}
+
+// SubmitAnswerText 提交文本答案进行验证
+func (g *Game) SubmitAnswerText(answer string) (*SubmitResult, error) {
+	if g.state != StatePlaying {
+		return nil, errors.New("当前没有正在进行的关卡")
+	}
+
+	// 验证答案
+	verifyResult := g.verifier.VerifyText(answer)
+
+	return g.processVerifyResult(verifyResult)
+}
+
+// processVerifyResult 处理验证结果
+func (g *Game) processVerifyResult(verifyResult VerifyResult) (*SubmitResult, error) {
 	score := g.calculateScore(verifyResult.Correct)
 
 	result := &SubmitResult{

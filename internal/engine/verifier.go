@@ -100,6 +100,20 @@ func (v *KeyVerifier) ReadAndVerify() (VerifyResult, error) {
 	return result, nil
 }
 
+// VerifyText 验证文本答案（不从 stdin 读取）
+func (v *KeyVerifier) VerifyText(answer string) VerifyResult {
+	v.startTime = time.Now()
+
+	// 解析用户输入的按键组合
+	userKeys := ParseKeyInput(answer)
+
+	// 验证
+	result := v.verify(userKeys)
+	result.ResponseTime = time.Since(v.startTime)
+
+	return result
+}
+
 // ParseKeyInput 解析用户输入的按键组合文本
 // 支持格式: "Cmd+S", "Ctrl+Shift+P", "Esc", ":wq" 等
 func ParseKeyInput(input string) []string {

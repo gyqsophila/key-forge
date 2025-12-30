@@ -17,9 +17,10 @@ func init() {
 }
 
 func runHint(cmd *cobra.Command, args []string) error {
-	level := game.GetCurrentLevel()
-	if level == nil {
-		renderer.RenderInfo("请先使用 'keyforge play' 开始训练")
+	// 加载当前关卡
+	result, err := game.Play()
+	if err != nil {
+		renderer.RenderError(err.Error())
 		return nil
 	}
 
@@ -29,7 +30,7 @@ func runHint(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	totalHints := len(level.Hints)
+	totalHints := len(result.Level.Hints)
 	renderer.RenderHint(hint, hintLevel, totalHints)
 
 	return nil

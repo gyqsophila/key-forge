@@ -17,9 +17,10 @@ func init() {
 }
 
 func runAnswer(cmd *cobra.Command, args []string) error {
-	level := game.GetCurrentLevel()
-	if level == nil {
-		renderer.RenderInfo("请先使用 'keyforge play' 开始训练")
+	// 加载当前关卡
+	_, err := game.Play()
+	if err != nil {
+		renderer.RenderError(err.Error())
 		return nil
 	}
 

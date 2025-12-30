@@ -7,8 +7,8 @@ import (
 // playCmd play 命令
 var playCmd = &cobra.Command{
 	Use:   "play",
-	Short: "开始或继续训练",
-	Long:  "开始新的训练或继续上次的进度",
+	Short: "查看当前关卡",
+	Long:  "显示当前关卡信息，然后退出。使用 'keyforge submit <答案>' 提交你的答案。",
 	RunE:  runPlay,
 }
 
@@ -17,7 +17,7 @@ func init() {
 }
 
 func runPlay(cmd *cobra.Command, args []string) error {
-	// 开始游戏
+	// 获取当前关卡
 	result, err := game.Play()
 	if err != nil {
 		renderer.RenderError(err.Error())
@@ -27,18 +27,8 @@ func runPlay(cmd *cobra.Command, args []string) error {
 	// 渲染关卡信息
 	renderer.RenderLevel(result.Level)
 
-	// 渲染输入提示
-	renderer.RenderPrompt(game.GetPlatform())
-
-	// 等待用户输入并验证
-	submitResult, err := game.SubmitAnswer()
-	if err != nil {
-		renderer.RenderError(err.Error())
-		return nil
-	}
-
-	// 渲染结果
-	renderer.RenderResult(submitResult)
+	// 显示提示
+	renderer.RenderPlayHelp(game.GetPlatform())
 
 	return nil
 }
