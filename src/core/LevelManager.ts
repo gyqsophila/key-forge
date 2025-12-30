@@ -1,5 +1,8 @@
 import * as vscode from 'vscode';
-import { Level, UserProgress } from '../types';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
+import { Level } from '../types';
 import { levels } from '../data/levels';
 
 export class LevelManager {
@@ -7,6 +10,7 @@ export class LevelManager {
     private context: vscode.ExtensionContext;
     private _onDidChangeLevel = new vscode.EventEmitter<Level>();
     readonly onDidChangeLevel = this._onDidChangeLevel.event;
+    private currentTempFilePath: string | undefined;
 
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
@@ -24,6 +28,9 @@ export class LevelManager {
     public async startLevel(levelId: string) {
         const index = levels.findIndex(l => l.id === levelId);
         if (index !== -1) {
+            // 清理上一个关卡的环境
+            await this.teardownEnvironment();
+
             this.currentLevelIndex = index;
             await this.setupEnvironment(levels[index]);
             this._onDidChangeLevel.fire(levels[index]);
@@ -35,26 +42,28 @@ export class LevelManager {
             this.currentLevelIndex++;
             await this.startLevel(levels[this.currentLevelIndex].id);
         } else {
+            await this.teardownEnvironment();
             vscode.window.showInformationMessage("🎉 恭喜！你已完成所有训练关卡！");
         }
     }
 
     private async setupEnvironment(level: Level) {
-        // 1. 关闭当前所有编辑器 (可选，避免混乱)
-        await vscode.commands.executeCommand('workbench.action.closeAllEditors');
-
         if (!level.setup) return;
 
-        // 2. 创建临时文件
-        const doc = await vscode.workspace.openTextDocument({
-            content: level.setup.initialContent || '',
-            language: level.setup.fileType || 'plaintext'
-        });
+        // 创建临时文件
+        const extension = level.setup.fileType === 'javascript' ? 'js' : 'txt';
+        const tempDir = os.tmpdir();
+        const fileName = `keyforge_level_${level.id}.${extension}`;
+        this.currentTempFilePath = path.join(tempDir, fileName);
 
-        // 3. 显示文件
+        // 写入初始内容
+        fs.writeFileSync(this.currentTempFilePath, level.setup.initialContent || '');
+
+        // 打开文件
+        const doc = await vscode.workspace.openTextDocument(this.currentTempFilePath);
         const editor = await vscode.window.showTextDocument(doc);
 
-        // 4. 设置光标位置
+        // 设置光标位置
         if (level.setup.initialSelection) {
             const pos = new vscode.Position(
                 level.setup.initialSelection.line,
@@ -65,6 +74,21 @@ export class LevelManager {
         }
 
         vscode.window.setStatusBarMessage(`👉 任务: ${level.title}`, 5000);
+    }
+
+    private async teardownEnvironment() {
+        // 关闭所有编辑器
+        await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+
+        // 删除临时文件
+        if (this.currentTempFilePath && fs.existsSync(this.currentTempFilePath)) {
+            try {
+                fs.unlinkSync(this.currentTempFilePath);
+            } catch (error) {
+                console.error('Failed to cleanup temp file:', error);
+            }
+            this.currentTempFilePath = undefined;
+        }
     }
 
     private loadProgress() {

@@ -25,8 +25,7 @@ export class Matcher {
         // 监听文本变化 (Undo/Delete)
         vscode.workspace.onDidChangeTextDocument((e) => {
             if (e.contentChanges.length > 0) {
-                // 暂时简单处理：只要有变动就触发检查
-                // 实际应该分析 changeKind
+                this.check(e.document);
             }
         }, null, this.disposables);
     }
