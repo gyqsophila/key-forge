@@ -1,36 +1,6 @@
-# Go build artifacts
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-
-# Test binary
-*.test
-
-# Output of go coverage tool
-*.out
-
-# Go workspace file
-go.work
-
-# Build output
-/dist/
-/keyforge
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
-
-# OS
+out
+node_modules
+.vscode-test
+*.vsix
 .DS_Store
-Thumbs.db
-
-# User data (for local testing)
-.keyforge/
-
-# Vendor (if not committed)
-# /vendor/
+dist

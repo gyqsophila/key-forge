@@ -1,0 +1,72 @@
+{
+    "name": "keyforge",
+    "displayName": "KeyForge",
+    "description": "Master VSCode shortcuts with interactive challenges",
+    "version": "0.1.0",
+    "engines": {
+        "vscode": "^1.85.0"
+    },
+    "categories": [
+        "Education",
+        "Other"
+    ],
+    "activationEvents": [],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "keyforge.start",
+                "title": "KeyForge: Start Training"
+            },
+            {
+                "command": "keyforge.resetLevel",
+                "title": "KeyForge: Reset Current Level",
+                "icon": "$(refresh)"
+            }
+        ],
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "keyforge-sidebar",
+                    "title": "KeyForge",
+                    "icon": "media/keyforge.svg"
+                }
+            ]
+        },
+        "views": {
+            "keyforge-sidebar": [
+                {
+                    "id": "keyforge.levels",
+                    "name": "Training Levels"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run package",
+        "compile": "webpack",
+        "watch": "webpack --watch",
+        "package": "webpack --mode production --devtool hidden-source-map",
+        "compile-tests": "tsc -p . --outDir out",
+        "watch-tests": "tsc -p . -w --outDir out",
+        "pretest": "npm run compile-tests && npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.85.0",
+        "@types/glob": "^8.1.0",
+        "@types/mocha": "^10.0.1",
+        "@types/node": "20.2.5",
+        "@typescript-eslint/eslint-plugin": "^5.59.8",
+        "@typescript-eslint/parser": "^5.59.8",
+        "eslint": "^8.41.0",
+        "glob": "^8.1.0",
+        "mocha": "^10.2.0",
+        "ts-loader": "^9.4.3",
+        "typescript": "^5.1.3",
+        "webpack": "^5.85.0",
+        "webpack-cli": "^5.1.1",
+        "@vscode/test-electron": "^2.3.2"
+    }
+}
