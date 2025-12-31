@@ -555,5 +555,56 @@ export const levels: Level[] = [
             matchSelection: { line: 1, character: 24 }
         },
         hints: ["按 '%' (Shift+5)"]
+    },
+    {
+        id: "v27-vim-A",
+        title: "Vim: 行尾插入 (A)",
+        description: "使用 'A' 快速跳转到行尾并进入插入模式，添加 'end'。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Add to the",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "Add to the end"
+        },
+        hints: ["按 'A' (Shift+a) 跳转行尾"]
+    },
+    {
+        id: "v28-vim-I",
+        title: "Vim: 行首插入 (I)",
+        description: "使用 'I' 快速跳转到行首并进入插入模式，添加 'Start: '。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "processing...",
+            initialSelection: { line: 0, character: 8 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "Start: processing..."
+        },
+        hints: ["按 'I' (Shift+i) 跳转行首"]
+    },
+    {
+        id: "v29-vim-C",
+        title: "Vim: 修改至行尾 (C)",
+        description: "光标在此处，使用 'C' 删除光标后所有内容并进入插入模式，输入 'Fixed'。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "This line is broken",
+            initialSelection: { line: 0, character: 13 } // On 'b'
+        },
+        trigger: {
+            type: "content",
+            matchContent: "This line is Fixed"
+        },
+        hints: ["按 'C' (Shift+c)"]
     }
 ];
