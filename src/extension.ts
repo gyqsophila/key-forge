@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { LevelManager } from './core/LevelManager';
 import { SidebarProvider } from './ui/SidebarProvider';
+import { DescriptionProvider } from './ui/DescriptionProvider';
 import { Matcher } from './core/Matcher';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -68,12 +69,13 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    context.subscriptions.push(startCmd, resetCmd, profileCmd, treeView);
+    // 注册 WebviewViewProvider (描述窗口)
+    const descriptionProvider = new DescriptionProvider(context.extensionUri, levelManager);
+    context.subscriptions.push(
+        vscode.window.registerWebviewViewProvider(DescriptionProvider.viewType, descriptionProvider)
+    );
 
-    // Hack: 监听 Undo 命令 (通过重写内置 undo 命令的 keybinding 是不推荐的)
-    // 在 Extension 中，通常通过 sync 状态或 Proxy Command 来实现
-    // 这里作为 MVP，我们展示一个手动触发的逻辑作为演示
-    context.subscriptions.push(startCmd, resetCmd, profileCmd);
+    context.subscriptions.push(startCmd, resetCmd, profileCmd, treeView);
 
     // Startup Logic
     if (levelManager.hasProgress()) {

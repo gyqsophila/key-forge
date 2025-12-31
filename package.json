@@ -42,6 +42,11 @@
                 {
                     "id": "keyforge.levels",
                     "name": "Training Levels"
+                },
+                {
+                    "id": "keyforge.description",
+                    "type": "webview",
+                    "name": "Level Description"
                 }
             ]
         }
