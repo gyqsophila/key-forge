@@ -128,7 +128,35 @@ export class LevelManager {
             await this.startLevel(filteredLevels[this.currentLevelIndex].id);
         } else {
             await this.teardownEnvironment();
-            vscode.window.showInformationMessage("🎉 恭喜！你已完成所有训练关卡！");
+            const choice = await vscode.window.showInformationMessage(
+                "🎉 恭喜！你已完成所有训练关卡！要重新挑战吗？",
+                { modal: true },
+                "再来一次", "退出"
+            );
+
+            if (choice === "再来一次") {
+                await this.resetProgress();
+            }
+        }
+    }
+
+    private async resetProgress() {
+        // 清空当前 Profile 下的已完成关卡
+        const levels = this.getLevels();
+        const levelIds = levels.map(l => l.id);
+
+        // 从 completedLevels 中移除当前 profile 的所有关卡 ID
+        levelIds.forEach(id => this.completedLevels.delete(id));
+
+        // 重置索引
+        this.currentLevelIndex = 0;
+
+        // 保存清除后的状态
+        this.saveProgress();
+
+        // 重新开始第一关
+        if (levels.length > 0) {
+            await this.startLevel(levels[0].id);
         }
     }
 
