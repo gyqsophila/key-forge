@@ -501,5 +501,59 @@ export const levels: Level[] = [
             matchSelection: { line: 0, character: 8 }
         },
         hints: ["按 'f' 然后按 '>' (Shift+.)"]
+    },
+    {
+        id: "v24-vim-visual-line",
+        title: "Vim: 行可视模式 (V)",
+        description: "使用 'V' (Shift+v) 进入行可视模式，选中两行，然后删除它们。",
+        difficulty: "advanced",
+        tags: ["vim", "edit", "selection"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Keep Line 1\nDelete Line 2\nDelete Line 3\nKeep Line 4",
+            initialSelection: { line: 1, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "Keep Line 1\nKeep Line 4",
+            minEvents: 2 // Selection then delete
+        },
+        hints: ["1. 按 'V' (Shift+v) 选中当前行", "2. 按 'j' 向下选中下一行", "3. 按 'd' 删除选中内容"]
+    },
+    {
+        id: "v25-vim-dot",
+        title: "Vim: 重复操作 (.)",
+        description: "使用 '.' 重复上一次修改。先删除第一行，然后用 '.' 删除第二行。",
+        difficulty: "advanced",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Delete Me 1\nDelete Me 2\nKeep Me",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "Keep Me",
+            minEvents: 2 // Two deletes
+        },
+        hints: ["1. 'dd' 删除第一行", "2. 光标自动落到第二行，按 '.' 重复删除"]
+    },
+    {
+        id: "v26-vim-percent",
+        title: "Vim: 括号匹配 (%)",
+        description: "光标在 '(' 处，使用 '%' 跳转到匹配的 ')' 处。",
+        difficulty: "intermediate",
+        tags: ["vim", "nav"],
+        setup: {
+            fileType: "javascript",
+            initialContent: "function demo() {\n    if (true) { return; }\n}",
+            initialSelection: { line: 1, character: 14 } // On the opening brace {
+        },
+        trigger: {
+            type: "selection",
+            // The matching } is at character 24
+            matchSelection: { line: 1, character: 24 }
+        },
+        hints: ["按 '%' (Shift+5)"]
     }
 ];
