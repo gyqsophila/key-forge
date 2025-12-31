@@ -446,5 +446,59 @@ export const levels: Level[] = [
             matchSelection: { line: 0, character: 13 }
         },
         hints: ["按 'v' 进入 Visual 模式", "按 'e' 或 'w' 选中 'Select'"]
+    },
+    {
+        id: "v21-vim-search",
+        title: "Vim: 搜索 (/)",
+        description: "使用 '/' 搜索文本 'treasure'，并按 Enter 跳转。",
+        difficulty: "intermediate",
+        tags: ["vim", "nav"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Line 1\nLine 2\nHere is the treasure you seek.\nLine 4",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "selection",
+            // 'treasure' starts at index 12 of line 2
+            matchSelection: { line: 2, character: 12 }
+        },
+        hints: ["按 '/' 输入 'treasure' 回车"]
+    },
+    {
+        id: "v22-vim-ciw",
+        title: "Vim: 修改内部单词 (ciw)",
+        description: "光标在 'wrong' 中间，使用 'ciw' 将其修改为 'right'。",
+        difficulty: "advanced",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "This is the wrong word.",
+            // Cursor inside 'wrong' (index 12-16). Let's put it on 'o' (14).
+            initialSelection: { line: 0, character: 14 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "This is the right word."
+        },
+        hints: ["按 'c' + 'i' + 'w'，输入 'right'，按 Esc"]
+    },
+    {
+        id: "v23-vim-f",
+        title: "Vim: 行内搜索 (f)",
+        description: "使用 'f' 快速跳转到当前行的字符 '>' 处。",
+        difficulty: "advanced",
+        tags: ["vim", "nav"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Jump to > this arrow",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "selection",
+            // '>' is at index 8
+            matchSelection: { line: 0, character: 8 }
+        },
+        hints: ["按 'f' 然后按 '>' (Shift+.)"]
     }
 ];
