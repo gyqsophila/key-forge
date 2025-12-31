@@ -14,26 +14,80 @@ export class LevelManager {
 
     private currentProfile: 'vscode' | 'vim' = 'vscode';
 
+    private completedLevels: Set<string> = new Set();
+    private static STORAGE_KEY = 'keyforge.progress';
+
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
         this.loadProgress();
     }
 
+    public hasProgress(): boolean {
+        // 如果有上次活跃的 Profile 或已有完成的关卡，则视为有进度
+        const saved = this.context.globalState.get<any>(LevelManager.STORAGE_KEY);
+        return !!saved;
+    }
+
     public setProfile(profile: 'vscode' | 'vim') {
         if (this.currentProfile !== profile) {
             this.currentProfile = profile;
-            // 切换模式后，重置到该模式的第一关
-            this.currentLevelIndex = 0;
-            // 通知 UI 刷新 (通过重发当前关卡事件，虽然不太优雅，但 SidebarProvider 会刷新)
-            // 更好的做法是 SidebarProvider 暴露 refresh 接口，或者这里发一个 Generic Event
-            // 但既然 SidebarProvider 监听 onDidChangeLevel 并调用 refresh，我们可以发一个 dummy event 或者
-            // 我们还是修改 startLevel 来触发刷新吧。
-            this._onDidChangeLevel.fire(this.getCurrentLevel());
+            // 切换 Profile 时，不强制重置为 0，而是尝试恢复到该 Profile 的进度
+            this.restoreSession(profile, false);
         }
     }
 
     public getProfile(): 'vscode' | 'vim' {
         return this.currentProfile;
+    }
+
+    public getCompletedLevels(): string[] {
+        return Array.from(this.completedLevels);
+    }
+
+    public isLevelCompleted(levelId: string): boolean {
+        return this.completedLevels.has(levelId);
+    }
+
+    public markCurrentLevelComplete() {
+        const currentId = this.getCurrentLevel().id;
+        if (!this.completedLevels.has(currentId)) {
+            this.completedLevels.add(currentId);
+            this.saveProgress();
+        }
+    }
+
+    /**
+     * 恢复会话
+     * @param forceProfile 如果指定，强制使用该 Profile，否则尝试使用上次保存的 Profile
+     * @param autoStart 是否自动开始关卡
+     */
+    public async restoreSession(forceProfile?: 'vscode' | 'vim', autoStart: boolean = true) {
+        if (forceProfile) {
+            this.currentProfile = forceProfile;
+        }
+
+        // 查找当前 Profile 下第一个未完成的关卡
+        const filteredLevels = this.getLevels();
+        let nextLevelIndex = filteredLevels.findIndex(l => !this.completedLevels.has(l.id));
+
+        if (nextLevelIndex === -1 && filteredLevels.length > 0) {
+            // 如果都完成了，停留在最后一关? 或者第一关?
+            // 这里选择第一关，或者我们可以做个 "全部完成" 的状态。
+            // 暂时设为 0 (第一关)
+            nextLevelIndex = 0;
+        }
+
+        this.currentLevelIndex = nextLevelIndex !== -1 ? nextLevelIndex : 0;
+
+        // 保存当前状态 (Profile 可能变了)
+        this.saveProgress();
+
+        if (autoStart) {
+            await this.startLevel(this.getCurrentLevel().id);
+        } else {
+            // 即使不自动开始，也应该触发事件刷新 UI
+            this._onDidChangeLevel.fire(this.getCurrentLevel());
+        }
     }
 
     public getLevels(): Level[] {
@@ -122,7 +176,24 @@ export class LevelManager {
         }
     }
 
+    private saveProgress() {
+        const data = {
+            lastActiveProfile: this.currentProfile,
+            completedLevels: Array.from(this.completedLevels),
+            lastLevelId: this.getCurrentLevel().id
+        };
+        this.context.globalState.update(LevelManager.STORAGE_KEY, data);
+    }
+
     private loadProgress() {
-        // TODO: 从 globalState 加载
+        const data = this.context.globalState.get<any>(LevelManager.STORAGE_KEY);
+        if (data) {
+            if (data.lastActiveProfile) {
+                this.currentProfile = data.lastActiveProfile;
+            }
+            if (data.completedLevels && Array.isArray(data.completedLevels)) {
+                this.completedLevels = new Set(data.completedLevels);
+            }
+        }
     }
 }

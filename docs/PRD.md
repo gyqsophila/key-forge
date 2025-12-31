@@ -26,14 +26,19 @@ KeyForge 插件旨在**将训练融入 IDE 本身**。它不是一个外部的�
 
 ### 2.1 交互流程 (User Flow)
 
-1.  **侧边栏引导**：用户在 VSCode 侧边栏 (Activity Bar) 点击 KeyForge 图标，展开关卡列表。
-2.  **关卡激活**：点击某个关卡，「KeyForge 教练」自动配置环境：
+1.  **启动检查 (Startup)**：
+    *   插件激活时检查是否有存档。
+    *   **无存档**：弹出 Profile 选择 (VSCode/Vim)，引导用户开始。
+    *   **有存档**：自动恢复上次的 Profile 和关卡进度。
+2.  **侧边栏引导**：用户在 VSCode 侧边栏 (Activity Bar) 点击 KeyForge 图标，展开关卡列表。
+    *   已通关的关卡显示 ✅。
+3.  **关卡激活**：点击某个关卡，「KeyForge 教练」自动配置环境：
     *   打开一个临时的练习文件（如 `exercise.js`）。
     *   在编辑器中填入特定的代码片段。
     *   在状态栏或侧边栏显示当前任务：“使用快捷键删除当前行”。
-3.  **实战操作**：用户在编辑器中直接按下 `Cmd+Shift+K` (macOS) 或 `Ctrl+Shift+K` (Windows)。
-4.  **智能判定**：插件监听到 `editor.action.deleteLines` 命令被触发，判定任务完成。
-5.  **即时反馈**：弹出 🎉 动画，自动跳转下一关。
+4.  **实战操作**：用户在编辑器中直接按下 `Cmd+Shift+K` (macOS) 或 `Ctrl+Shift+K` (Windows)。
+5.  **智能判定**：插件监听到 `editor.action.deleteLines` 命令被触发，判定任务完成。
+6.  **即时反馈**：弹出 🎉 动画，自动跳转下一关（相同 Profile 下的下一关）。
 
 ### 2.2 功能模块 (Feature Modules)
 
@@ -52,8 +57,12 @@ KeyForge 插件旨在**将训练融入 IDE 本身**。它不是一个外部的�
 *   **State 监听**：监听 `isDirty` (是否保存)、`selections` (光标位置) 等状态。
 
 #### 2.2.3 进度管理 (Progress)
-*   利用 `ExtensionContext.globalState` 存储用户通关记录。
-*   侧边栏 TreeView 实时显示关卡解锁/完成状态（🔒/✅/▶️）。
+*   利用 `ExtensionContext.globalState` 存储用户状态。
+*   **存储内容**：
+    *   `lastActiveProfile`: 上次使用的模式 (vscode/vim)。
+    *   `completedLevels`: 已完成关卡 ID 集合。
+    *   `currentLevelId`: 当前停留在的关卡 ID。
+*   **侧边栏反馈**：TreeView 实时显示关卡完成状态（✅）。
 
 #### 2.2.4 Vim 模式支持 (Vim Support)
 *   检测用户是否安装了 `vscodevim` 插件。

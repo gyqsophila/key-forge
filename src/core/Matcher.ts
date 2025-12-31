@@ -84,11 +84,16 @@ export class Matcher {
     }
 
     private onSuccess(levelTitle: string) {
-        vscode.window.showInformationMessage(`✅ 完成任务: ${levelTitle}`, "下一关").then(selection => {
-            if (selection === "下一关") {
-                this.levelManager.nextLevel();
-            }
-        });
+        // 1. Mark complete immediately
+        this.levelManager.markCurrentLevelComplete();
+
+        // 2. Show success message
+        vscode.window.setStatusBarMessage(`✅ 完成任务: ${levelTitle} | 正在跳转下一关...`, 3000);
+
+        // 3. Auto-advance after a short delay
+        setTimeout(() => {
+            this.levelManager.nextLevel();
+        }, 1500);
     }
 
     public dispose() {
