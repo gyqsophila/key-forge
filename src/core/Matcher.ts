@@ -28,6 +28,11 @@ export class Matcher {
                 this.check(e.document);
             }
         }, null, this.disposables);
+
+        // 监听光标变化 (Selection)
+        vscode.window.onDidChangeTextEditorSelection((e) => {
+            this.check(e.textEditor.document);
+        }, null, this.disposables);
     }
 
     public async check(document: vscode.TextDocument, commandId?: string) {
@@ -41,8 +46,6 @@ export class Matcher {
                 this.onSuccess(currentLevel.title);
                 return;
             }
-            // 特殊处理 Undo - 很难直接监听，通常看内容变化
-            // 这里为了演示，我们假设如果用户按了 Undo，内容会变回以前的状态。
         }
 
         // 2. Content Based Verification
@@ -53,6 +56,22 @@ export class Matcher {
 
             if (docText === expectedText) {
                 this.onSuccess(currentLevel.title);
+                return;
+            }
+        }
+
+        // 3. Selection Based Verification
+        if (currentLevel.trigger.type === 'selection' && currentLevel.trigger.matchSelection) {
+            const editor = vscode.window.activeTextEditor;
+            if (editor && editor.document === document) {
+                const selection = editor.selection;
+                const target = currentLevel.trigger.matchSelection;
+
+                // Allow a small tolerance?? No, Vim training should be precise.
+                if (selection.active.line === target.line && selection.active.character === target.character) {
+                    this.onSuccess(currentLevel.title);
+                    return;
+                }
             }
         }
     }

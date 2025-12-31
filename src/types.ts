@@ -26,6 +26,12 @@ export interface Level {
         // type: content (regex match)
         matchContent?: string;
 
+        // type: selection
+        matchSelection?: {
+            line: number;
+            character: number;
+        };
+
         // type: state
         stateKey?: string;
         stateValue?: any;
