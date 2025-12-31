@@ -22,6 +22,10 @@
                 "command": "keyforge.resetLevel",
                 "title": "KeyForge: Reset Current Level",
                 "icon": "$(refresh)"
+            },
+            {
+                "command": "keyforge.selectProfile",
+                "title": "KeyForge: Select Profile"
             }
         ],
         "viewsContainers": {

@@ -28,7 +28,20 @@ export function activate(context: vscode.ExtensionContext) {
         levelManager.startLevel(levelManager.getCurrentLevel().id);
     });
 
-    context.subscriptions.push(startCmd, resetCmd);
+    // 注册命令：选择模式 (Profile)
+    let profileCmd = vscode.commands.registerCommand('keyforge.selectProfile', async () => {
+        const selected = await vscode.window.showQuickPick(['VSCode', 'Vim'], {
+            placeHolder: 'Select Training Profile'
+        });
+
+        if (selected) {
+            const profile = selected.toLowerCase() as 'vscode' | 'vim';
+            levelManager.setProfile(profile);
+            vscode.window.showInformationMessage(`Switched to ${selected} profile`);
+        }
+    });
+
+    context.subscriptions.push(startCmd, resetCmd, profileCmd);
 
     // Hack: 监听 Undo 命令 (通过重写内置 undo 命令的 keybinding 是不推荐的)
     // 在 Extension 中，通常通过 sync 状态或 Proxy Command 来实现

@@ -12,35 +12,66 @@ export class LevelManager {
     readonly onDidChangeLevel = this._onDidChangeLevel.event;
     private currentTempFilePath: string | undefined;
 
+    private currentProfile: 'vscode' | 'vim' = 'vscode';
+
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
         this.loadProgress();
     }
 
+    public setProfile(profile: 'vscode' | 'vim') {
+        if (this.currentProfile !== profile) {
+            this.currentProfile = profile;
+            // 切换模式后，重置到该模式的第一关
+            this.currentLevelIndex = 0;
+            // 通知 UI 刷新 (通过重发当前关卡事件，虽然不太优雅，但 SidebarProvider 会刷新)
+            // 更好的做法是 SidebarProvider 暴露 refresh 接口，或者这里发一个 Generic Event
+            // 但既然 SidebarProvider 监听 onDidChangeLevel 并调用 refresh，我们可以发一个 dummy event 或者
+            // 我们还是修改 startLevel 来触发刷新吧。
+            this._onDidChangeLevel.fire(this.getCurrentLevel());
+        }
+    }
+
+    public getProfile(): 'vscode' | 'vim' {
+        return this.currentProfile;
+    }
+
     public getLevels(): Level[] {
-        return levels;
+        if (this.currentProfile === 'vim') {
+            return levels.filter(l => l.tags.includes('vim'));
+        } else {
+            return levels.filter(l => !l.tags.includes('vim'));
+        }
     }
 
     public getCurrentLevel(): Level {
-        return levels[this.currentLevelIndex];
+        const filteredLevels = this.getLevels();
+        // 确保 index 不越界
+        if (this.currentLevelIndex >= filteredLevels.length) {
+            this.currentLevelIndex = 0;
+        }
+        return filteredLevels[this.currentLevelIndex];
     }
 
     public async startLevel(levelId: string) {
-        const index = levels.findIndex(l => l.id === levelId);
+        const filteredLevels = this.getLevels();
+        const index = filteredLevels.findIndex(l => l.id === levelId);
+
         if (index !== -1) {
             // 清理上一个关卡的环境
             await this.teardownEnvironment();
 
             this.currentLevelIndex = index;
-            await this.setupEnvironment(levels[index]);
-            this._onDidChangeLevel.fire(levels[index]);
+            await this.setupEnvironment(filteredLevels[index]);
+            this._onDidChangeLevel.fire(filteredLevels[index]);
         }
     }
 
     public async nextLevel() {
-        if (this.currentLevelIndex < levels.length - 1) {
+        const filteredLevels = this.getLevels();
+        if (this.currentLevelIndex < filteredLevels.length - 1) {
             this.currentLevelIndex++;
-            await this.startLevel(levels[this.currentLevelIndex].id);
+            await this.startLevel(filteredLevels[this.currentLevelIndex].id);
         } else {
             await this.teardownEnvironment();
             vscode.window.showInformationMessage("🎉 恭喜！你已完成所有训练关卡！");

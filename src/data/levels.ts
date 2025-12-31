@@ -236,7 +236,7 @@ export const levels: Level[] = [
         },
         trigger: {
             type: "selection",
-            matchSelection: { line: 0, character: 26 }
+            matchSelection: { line: 0, character: 25 }
         },
         hints: ["按 '$' (Shift+4)"]
     }
