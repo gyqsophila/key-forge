@@ -392,5 +392,59 @@ export const levels: Level[] = [
             matchContent: "new word"
         },
         hints: ["按 'c' 然后 'w'，输入 'new'，按 Esc"]
+    },
+    {
+        id: "v18-vim-u",
+        title: "Vim: 撤销 (u)",
+        description: "不小心删除了重要内容？使用 'u' 撤销上一步操作。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Line 1\nImportant Data",
+            initialSelection: { line: 1, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "Line 1\nImportant Data"
+        },
+        hints: [
+            "1. 先用 'dd' 删除第二行",
+            "2. 发现删错了，按 'u' 撤销"
+        ]
+    },
+    {
+        id: "v19-vim-copy-paste",
+        title: "Vim: 复制粘贴 (yy + p)",
+        description: "使用 'yy' 复制第一行，然后使用 'p' 将其粘贴到下方。",
+        difficulty: "intermediate",
+        tags: ["vim", "clipboard"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Copy me\nPaste below",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "Copy me\nCopy me\nPaste below"
+        },
+        hints: ["按 'yy' 复制，然后 'p' 粘贴"]
+    },
+    {
+        id: "v20-vim-visual",
+        title: "Vim: 可视模式 (v)",
+        description: "使用 'v' 进入可视模式，选中 'Select'",
+        difficulty: "intermediate",
+        tags: ["vim", "selection"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Please Select Me",
+            initialSelection: { line: 0, character: 7 }
+        },
+        trigger: {
+            type: "selection",
+            matchSelection: { line: 0, character: 13 }
+        },
+        hints: ["按 'v' 进入 Visual 模式", "按 'e' 或 'w' 选中 'Select'"]
     }
 ];
