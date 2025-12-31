@@ -50,11 +50,13 @@ export class Matcher {
 
         // 2. Content Based Verification
         if (currentLevel.trigger.type === 'content' && currentLevel.trigger.matchContent) {
-            // Normalize: remove CR (\r) for consistent comparison across platforms
-            const docText = document.getText().replace(/\r/g, '').trim();
-            const expectedText = currentLevel.trigger.matchContent.replace(/\r/g, '').trim();
+            // Using includes() allows for trailing newlines differences, 
+            // while ensuring the core content modification is present.
+            // We still normalize CR for Windows compatibility.
+            const docText = document.getText().replace(/\r/g, '');
+            const expectedText = currentLevel.trigger.matchContent.replace(/\r/g, '');
 
-            if (docText === expectedText) {
+            if (docText.includes(expectedText)) {
                 this.onSuccess(currentLevel.title);
                 return;
             }

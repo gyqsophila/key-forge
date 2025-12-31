@@ -307,5 +307,90 @@ export const levels: Level[] = [
             matchContent: "Line 1\nLine 3"
         },
         hints: ["按两次 'd'"]
+    },
+    {
+        id: "v13-vim-x",
+        title: "Vim: 删除字符 (x)",
+        description: "使用 'x' 删除光标所在的字符。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Hello World",
+            initialSelection: { line: 0, character: 4 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "Hell World"
+        },
+        hints: ["按 'x'"]
+    },
+    {
+        id: "v14-vim-r",
+        title: "Vim: 替换字符 (r)",
+        description: "使用 'r' 将光标下的字符替换为 'o'。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Hellx World",
+            initialSelection: { line: 0, character: 4 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "Hello World"
+        },
+        hints: ["按 'r' 然后按 'o'"]
+    },
+    {
+        id: "v15-vim-o",
+        title: "Vim: 插入行 (o)",
+        description: "使用 'o' 在 'Line 1' 下方插入新行。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Line 1\nEnd",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "Line 1\n\nEnd"
+        },
+        hints: ["按 'o'"]
+    },
+    {
+        id: "v16-vim-O",
+        title: "Vim: 插入行 (O)",
+        description: "使用 'O' (按Shift+o) 在 'Line 2' 上方插入新行。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Start\nLine 2",
+            initialSelection: { line: 1, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "Start\n\nLine 2"
+        },
+        hints: ["按 'O' (Shift+o)"]
+    },
+    {
+        id: "v17-vim-cw",
+        title: "Vim: 修改单词 (cw)",
+        description: "光标在 'change' 单词开头，使用 'cw' 删除它并输入 'new'。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "change word",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "new word"
+        },
+        hints: ["按 'c' 然后 'w'，输入 'new'，按 Esc"]
     }
 ];
