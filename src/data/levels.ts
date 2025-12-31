@@ -406,7 +406,8 @@ export const levels: Level[] = [
         },
         trigger: {
             type: "content",
-            matchContent: "Line 1\nImportant Data"
+            matchContent: "Line 1\nImportant Data",
+            minEvents: 2 // Require at least 2 changes (e.g. Delete then Undo) to prevent auto-pass
         },
         hints: [
             "1. 先用 'dd' 删除第二行",

@@ -50,6 +50,12 @@ export class Matcher {
 
         // 2. Content Based Verification
         if (currentLevel.trigger.type === 'content' && currentLevel.trigger.matchContent) {
+
+            // Check for minimum events (document version)
+            if (currentLevel.trigger.minEvents && document.version < currentLevel.trigger.minEvents) {
+                return;
+            }
+
             // Using includes() allows for trailing newlines differences, 
             // while ensuring the core content modification is present.
             // We still normalize CR for Windows compatibility.
@@ -85,7 +91,12 @@ export class Matcher {
         }
     }
 
+    private isLevelTransitioning = false;
+
     private onSuccess(levelTitle: string) {
+        if (this.isLevelTransitioning) return;
+        this.isLevelTransitioning = true;
+
         // 1. Mark complete immediately
         this.levelManager.markCurrentLevelComplete();
 
@@ -93,8 +104,9 @@ export class Matcher {
         vscode.window.setStatusBarMessage(`✅ 完成任务: ${levelTitle} | 正在跳转下一关...`, 3000);
 
         // 3. Auto-advance after a short delay
-        setTimeout(() => {
-            this.levelManager.nextLevel();
+        setTimeout(async () => {
+            await this.levelManager.nextLevel();
+            this.isLevelTransitioning = false;
         }, 1500);
     }
 

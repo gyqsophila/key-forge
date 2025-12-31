@@ -35,6 +35,9 @@ export interface Level {
         // type: state
         stateKey?: string;
         stateValue?: any;
+
+        // requirement: minimum document version (to ensure interaction)
+        minEvents?: number;
     };
 
     hints: string[];
