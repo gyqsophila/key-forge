@@ -606,5 +606,57 @@ export const levels: Level[] = [
             matchContent: "This line is Fixed"
         },
         hints: ["按 'C' (Shift+c)"]
+    },
+    {
+        id: "v30-vim-e",
+        title: "Vim: 词尾跳转 (e)",
+        description: "使用 'e' 跳转到当前单词的结尾。",
+        difficulty: "intermediate",
+        tags: ["vim", "nav"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Jump to the end",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "selection",
+            // 'Jump' ends at index 3
+            matchSelection: { line: 0, character: 3 }
+        },
+        hints: ["按 'e'"]
+    },
+    {
+        id: "v31-vim-ci-quote",
+        title: "Vim: 修改引号内容 (ci\")",
+        description: "快速修改引号内的内容。光标在引号内，输入 'Hello'。",
+        difficulty: "advanced",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "javascript",
+            initialContent: "const msg = \"Old Message\";",
+            initialSelection: { line: 0, character: 15 } // Inside limits
+        },
+        trigger: {
+            type: "content",
+            matchContent: "const msg = \"Hello\";"
+        },
+        hints: ["按 'c' + 'i' + '\"'，输入 'Hello'，按 Esc"]
+    },
+    {
+        id: "v32-vim-dt",
+        title: "Vim: 删除至字符 (dt)",
+        description: "使用 'dt' 删除直到（但不包含）下一个符号 ':'。",
+        difficulty: "advanced",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Delete this part: Keep this",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: ": Keep this"
+        },
+        hints: ["按 'd' + 't' + ':'"]
     }
 ];
