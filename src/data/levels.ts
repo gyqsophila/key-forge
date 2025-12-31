@@ -239,5 +239,73 @@ export const levels: Level[] = [
             matchSelection: { line: 0, character: 25 }
         },
         hints: ["按 '$' (Shift+4)"]
+    },
+    {
+        id: "v09-vim-gg",
+        title: "Vim: 文档开头 (gg)",
+        description: "使用 'gg' 快速跳转到文件的第一行。",
+        difficulty: "beginner",
+        tags: ["vim", "nav"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Line 1\nLine 2\nLine 3\nStart here",
+            initialSelection: { line: 3, character: 0 }
+        },
+        trigger: {
+            type: "selection",
+            matchSelection: { line: 0, character: 0 }
+        },
+        hints: ["按两次 'g'"]
+    },
+    {
+        id: "v10-vim-G",
+        title: "Vim: 文档结尾 (G)",
+        description: "使用 'G' 快速跳转到文件的最后一行。",
+        difficulty: "beginner",
+        tags: ["vim", "nav"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Start here\nLine 2\nLine 3\nLast Line",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "selection",
+            matchSelection: { line: 3, character: 0 }
+        },
+        hints: ["按 'G' (Shift+g)"]
+    },
+    {
+        id: "v11-vim-dw",
+        title: "Vim: 删除单词 (dw)",
+        description: "当前光标位于 'this' 上。使用 'dw' 删除该单词 (include trailing space)。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Delete this word",
+            initialSelection: { line: 0, character: 7 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "Delete word"
+        },
+        hints: ["d (delete) + w (word)"]
+    },
+    {
+        id: "v12-vim-dd",
+        title: "Vim: 删除行 (dd)",
+        description: "使用 'dd' 删除当前行。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Line 1\nDelete me\nLine 3",
+            initialSelection: { line: 1, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "Line 1\nLine 3"
+        },
+        hints: ["按两次 'd'"]
     }
 ];
