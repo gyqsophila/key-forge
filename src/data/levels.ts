@@ -446,7 +446,7 @@ export const levels: Level[] = [
             type: "selection",
             matchSelection: { line: 0, character: 13 }
         },
-        hints: ["按 'v' 进入 Visual 模式", "按 'e' 或 'w' 选中 'Select'"]
+        hints: ["按 'v' 进入 Visual 模式", "按 'e' 选中 'Select'"]
     },
     {
         id: "v21-vim-search",
