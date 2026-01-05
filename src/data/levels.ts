@@ -709,5 +709,109 @@ export const levels: Level[] = [
             matchContent: "if (true) {\n    return;\n}"
         },
         hints: ["按 '>>' 向右缩进"]
+    },
+    {
+        id: "v36-vim-visual-block",
+        title: "Vim: 块选择与编辑 (Ctrl+v)",
+        description: "使用块选择 (Ctrl+v) 在每行开头批量插入 '// ' 注释。",
+        difficulty: "advanced",
+        tags: ["vim", "edit", "selection"],
+        setup: {
+            fileType: "javascript",
+            initialContent: "var a = 1;\nvar b = 2;\nvar c = 3;",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "// var a = 1;\n// var b = 2;\n// var c = 3;"
+        },
+        hints: ["1. 光标移到第1行第1列", "2. 'Ctrl+v' 进块选择", "3. 'j' 选中三行", "4. 'I' (Shift+i) 进入插入", "5. 输入 '// ' 按 Esc"]
+    },
+    {
+        id: "v37-vim-mark",
+        title: "Vim: 标记 (Marks)",
+        description: "在第 1 行设置标记 'a' (ma)，去别处逛逛，然后跳回 'a 修改 'Mark me' 为 'DONE'。",
+        difficulty: "intermediate",
+        tags: ["vim", "nav", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Line 1: Mark me\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nLine 8: Go here first",
+            initialSelection: { line: 7, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "Line 1: DONE",
+            minEvents: 1
+        },
+        hints: ["1. 移到第 1 行 'ma' 设标记", "2. 乱跑到别处", "3. '`a' 跳回", "4. 修改为 'DONE'"]
+    },
+    {
+        id: "v38-vim-substitute",
+        title: "Vim: 全局替换 (:%s)",
+        description: "使用命令将所有的 'bug' 替换为 'feature'。",
+        difficulty: "advanced",
+        tags: ["vim", "edit", "command"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "This code has a bug.\nAnother bug here.\nFix the bug.",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "This code has a feature.\nAnother feature here.\nFix the feature."
+        },
+        hints: ["输入 ':%s/bug/feature/g' 然后回车"]
+    },
+    {
+        id: "v39-vim-macro",
+        title: "Vim: 宏录制与执行 (q, @)",
+        description: "任务：给每行文字加括号。先在第一行录制宏 'q'，然后在下面两行通过 '@' 重放。",
+        difficulty: "advanced",
+        tags: ["vim", "edit", "macro"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Item 1\nItem 2\nItem 3",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "(Item 1)\n(Item 2)\n(Item 3)",
+            minEvents: 2 // Record + Replay
+        },
+        hints: ["1. 'qa' 开始录制", "2. 'I(' 插左括号, 'A)' 插右括号", "3. 'j' 下移一行", "4. 'q' 停止", "5. '@a' 重放"]
+    },
+    {
+        id: "v40-vim-register",
+        title: "Vim: 命名寄存器 (\"a)",
+        description: "使用寄存器 'a' 复制 'Copyright'，然后粘贴到底部。",
+        difficulty: "advanced",
+        tags: ["vim", "edit", "clipboard"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Copyright 2023\nContent",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "Copyright 2023\nContent\nCopyright 2023"
+        },
+        hints: ["1. '\"ayy' 复制整行到寄存器 a", "2. 'G' 到最后", "3. '\"ap' 从寄存器 a 粘贴"]
+    },
+    {
+        id: "v41-vim-gu",
+        title: "Vim: 批量转大写 (gU)",
+        description: "使用 'gU' 和动作组合，将 'make me loud' 变为全大写。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "shhh... make me loud",
+            initialSelection: { line: 0, character: 8 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "shhh... MAKE ME LOUD"
+        },
+        hints: ["按 'gU' 然后 '$' (到行尾)"]
     }
 ];
