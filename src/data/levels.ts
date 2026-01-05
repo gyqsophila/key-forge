@@ -658,5 +658,56 @@ export const levels: Level[] = [
             matchContent: ": Keep this"
         },
         hints: ["按 'd' + 't' + ':'"]
+    },
+    {
+        id: "v33-vim-tilde",
+        title: "Vim: 大小写切换 (~)",
+        description: "选中 'hello'，使用 '~' 切换为大写。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "hello world",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "HELLO world"
+        },
+        hints: ["1. 've' 选中单词", "2. 按 '~' (Shift+`)"]
+    },
+    {
+        id: "v34-vim-J",
+        title: "Vim: 合并行 (J)",
+        description: "将下面两行合并为一行。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Line 1\nLine 2",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "Line 1 Line 2"
+        },
+        hints: ["按 'J' (Shift+j)"]
+    },
+    {
+        id: "v35-vim-indent",
+        title: "Vim: 缩进调整 (>>)",
+        description: "将代码块向右缩进一次。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "javascript",
+            initialContent: "if (true) {\nreturn;\n}",
+            initialSelection: { line: 1, character: 0 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "if (true) {\n    return;\n}"
+        },
+        hints: ["按 '>>' 向右缩进"]
     }
 ];
