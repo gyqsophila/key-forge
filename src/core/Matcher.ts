@@ -11,6 +11,11 @@ export class Matcher {
     }
 
     private registerListeners() {
+        // 监听关卡变更，设置验证冷却期 (Grace Period)
+        this.levelManager.onDidChangeLevel(() => {
+            this.ignoreUntil = Date.now() + 800; // 0.8s internal cooldown
+        });
+
         // 监听命令执行
         // 注意：onDidExecuteCommand 是一个 Proposed API，在稳定版中可能不可用，
         // 或者只能监听 extension 注册的命令。
@@ -35,7 +40,12 @@ export class Matcher {
         }, null, this.disposables);
     }
 
+    private ignoreUntil: number = 0;
+
     public async check(document: vscode.TextDocument, commandId?: string) {
+        // Grace Period Check
+        if (Date.now() < this.ignoreUntil) return;
+
         const currentLevel = this.levelManager.getCurrentLevel();
         if (!currentLevel) return;
 
