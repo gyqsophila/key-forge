@@ -982,5 +982,58 @@ export const levels: Level[] = [
             matchSelection: { line: 0, character: 11 }
         },
         hints: ["按 't' 然后 'x'"]
+    },
+    {
+        id: "v51-vim-ctrl-d",
+        title: "Vim: 向下翻页 (Ctrl+d)",
+        description: "使用 'Ctrl+d' 向下滚动半屏，快速浏览长文件。",
+        difficulty: "intermediate",
+        tags: ["vim", "nav"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nLine 8\nLine 9\nLine 10\nLine 11\nLine 12\nLine 13\nLine 14\nLine 15\nTarget Line",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "selection",
+            // Typically Ctrl+d jumps ~10-15 lines or half screen.
+            // Target line is at 15. Let's make it easy to hit.
+            matchSelection: { line: 15, character: 0 }
+        },
+        hints: ["按 'Ctrl+d' 向下翻滚"]
+    },
+    {
+        id: "v52-vim-D",
+        title: "Vim: 删除至行尾 (D)",
+        description: "使用 'D' (Shift+d) 删除光标后所有内容 (等同于 d$)。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Keep this part, delete the rest",
+            initialSelection: { line: 0, character: 15 } // On 'd'
+        },
+        trigger: {
+            type: "content",
+            matchContent: "Keep this part,"
+        },
+        hints: ["按 'D' (Shift+d)"]
+    },
+    {
+        id: "v53-vim-cit",
+        title: "Vim: 修改标签内容 (cit)",
+        description: "光标在标签内，使用 'cit' 修改 HTML 标签的内容。",
+        difficulty: "advanced",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "xml",
+            initialContent: "<div>Old Content</div>",
+            initialSelection: { line: 0, character: 5 } // Inside div
+        },
+        trigger: {
+            type: "content",
+            matchContent: "<div>New Content</div>"
+        },
+        hints: ["按 'c' + 'i' + 't'，输入 'New Content'，按 Esc"]
     }
 ];
