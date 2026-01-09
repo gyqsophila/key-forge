@@ -1035,5 +1035,56 @@ export const levels: Level[] = [
             matchContent: "<div>New Content</div>"
         },
         hints: ["按 'c' + 'i' + 't'，输入 'New Content'，按 Esc"]
+    },
+    {
+        id: "v54-vim-cc",
+        title: "Vim: 修改整行 (cc)",
+        description: "使用 'cc' 清空当前行并重新输入 'Corrected Line'。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "This entire line is wrong",
+            initialSelection: { line: 0, character: 10 }
+        },
+        trigger: {
+            type: "content",
+            matchContent: "Corrected Line"
+        },
+        hints: ["按 'cc' (或 'S')"]
+    },
+    {
+        id: "v55-vim-ci-bracket",
+        title: "Vim: 修改括号内容 (ci()",
+        description: "光标在括号内，使用 'ci(' 修改括号内的参数。",
+        difficulty: "advanced",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "javascript",
+            initialContent: "console.log(old_variable);",
+            initialSelection: { line: 0, character: 15 } // Inside parens
+        },
+        trigger: {
+            type: "content",
+            matchContent: "console.log(new_data);"
+        },
+        hints: ["按 'c' + 'i' + '('，输入 'new_data'"]
+    },
+    {
+        id: "v56-vim-xp",
+        title: "Vim: 交换字符 (xp)",
+        description: "发现拼写错误 'hte'？使用 'xp' 快速交换字符修复为 'the'。",
+        difficulty: "intermediate",
+        tags: ["vim", "edit"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "This is hte end",
+            initialSelection: { line: 0, character: 8 } // On 'h' of 'hte'
+        },
+        trigger: {
+            type: "content",
+            matchContent: "This is the end"
+        },
+        hints: ["按 'x' (删除h) 然后 'p' (粘贴在t后)"]
     }
 ];
