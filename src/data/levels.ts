@@ -813,5 +813,60 @@ export const levels: Level[] = [
             matchContent: "shhh... MAKE ME LOUD"
         },
         hints: ["按 'gU' 然后 '$' (到行尾)"]
+    },
+    {
+        id: "v42-vim-star",
+        title: "Vim: 搜索当前词 (*)",
+        description: "光标位于 'magic' 上，使用 '*' 快速跳转到下一个 'magic'。",
+        difficulty: "intermediate",
+        tags: ["vim", "nav"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "There is magic in the air.\nDo you believe in magic?",
+            initialSelection: { line: 0, character: 9 } // On 'magic'
+        },
+        trigger: {
+            type: "selection",
+            // Second 'magic' starts at line 1, char 18
+            matchSelection: { line: 1, character: 18 }
+        },
+        hints: ["按 '*' (Shift+8)"]
+    },
+    {
+        id: "v43-vim-paragraph",
+        title: "Vim: 段落跳转 (})",
+        description: "使用 '}' 快速跳过当前代码块，到达下一段落。",
+        difficulty: "intermediate",
+        tags: ["vim", "nav"],
+        setup: {
+            fileType: "javascript",
+            initialContent: "function a() {\n  // Code A\n}\n\nfunction b() {\n  // Code B\n}",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "selection",
+            // Should jump to the empty line (line 3) or start of next block (line 4)?
+            // Vim '}' jumps to the empty line after the paragraph.
+            matchSelection: { line: 3, character: 0 }
+        },
+        hints: ["按 '}' (Shift+])"]
+    },
+    {
+        id: "v44-vim-caret",
+        title: "Vim: 软行首 (^)",
+        description: "使用 '^' 跳转到本行第一个非空字符 (缩进后的代码开头)。",
+        difficulty: "intermediate",
+        tags: ["vim", "nav"],
+        setup: {
+            fileType: "javascript",
+            initialContent: "    const indented = true;",
+            initialSelection: { line: 0, character: 0 } // Hard start
+        },
+        trigger: {
+            type: "selection",
+            // 'const' starts at 4
+            matchSelection: { line: 0, character: 4 }
+        },
+        hints: ["按 '^' (Shift+6)"]
     }
 ];
