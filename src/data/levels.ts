@@ -928,5 +928,59 @@ export const levels: Level[] = [
             matchSelection: { line: 0, character: 20 }
         },
         hints: ["1. '/next' 回车", "2. 按 'n' 跳转直到最后一个"]
+    },
+    {
+        id: "v48-vim-N",
+        title: "Vim: 反向重复搜索 (N)",
+        description: "先用 '/' 搜索 'prev'，然后用 'N' 往回跳转。",
+        difficulty: "intermediate",
+        tags: ["vim", "nav"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "prev one, prev two, prev three",
+            initialSelection: { line: 0, character: 15 } // At the end
+        },
+        trigger: {
+            type: "selection",
+            // 'prev one' starts at 0
+            matchSelection: { line: 0, character: 0 }
+        },
+        hints: ["1. '/prev' 回车 (此时应该在最后一个)", "2. 按 'N' (Shift+n) 往回找，直到第一个"]
+    },
+    {
+        id: "v49-vim-curly-backward",
+        title: "Vim: 上一段落 ({)",
+        description: "使用 '{' 快速向上跳过当前代码块，到达上一段落。",
+        difficulty: "intermediate",
+        tags: ["vim", "nav"],
+        setup: {
+            fileType: "javascript",
+            initialContent: "function a() {\n  // Code A\n}\n\nfunction b() {\n  // Code B\n}",
+            initialSelection: { line: 6, character: 0 } // At the end
+        },
+        trigger: {
+            type: "selection",
+            // Should jump to empty line 3
+            matchSelection: { line: 3, character: 0 }
+        },
+        hints: ["按 '{' (Shift+[)"]
+    },
+    {
+        id: "v50-vim-till",
+        title: "Vim: 跳转至字符前 (t)",
+        description: "使用 't' 跳转到字符 'x' 的前一个位置 (不包含 'x')。",
+        difficulty: "intermediate",
+        tags: ["vim", "nav"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Stop before x marks the spot",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "selection",
+            // 'x' is at 12. So 't' should land on ' ' (11)
+            matchSelection: { line: 0, character: 11 }
+        },
+        hints: ["按 't' 然后 'x'"]
     }
 ];
