@@ -868,5 +868,65 @@ export const levels: Level[] = [
             matchSelection: { line: 0, character: 4 }
         },
         hints: ["按 '^' (Shift+6)"]
+    },
+    {
+        id: "v45-vim-semicolon",
+        title: "Vim: 重复行内搜索 (;)",
+        description: "使用 'f' 找到第一个 'o'，然后用 ';' 快速跳到下一个 'o'。",
+        difficulty: "intermediate",
+        tags: ["vim", "nav"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Look for o one by one",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "selection",
+            // 'L[o]ok f[o]r [o]ne'
+            // 0: L, 1: o, 2: o. First 'o' is at 1. Second is at 2. Third is at 6.
+            // Setup: user should verify finding second or third?
+            // Let's guide them: fo -> 1. ; -> 2. ; -> 6.
+            // Let's target the last 'o' to force multiple ';' or direct jump?
+            // Better: target the 3rd one.
+            matchSelection: { line: 0, character: 9 } // "one" starts at 9
+        },
+        hints: ["1. 'fo' 跳到第一个 'o'", "2. 按 ';' 重复跳转，直到 'one' 的 'o'"]
+    },
+    {
+        id: "v46-vim-comma",
+        title: "Vim: 反向行内搜索 (,)",
+        description: "先用 'f' 跳过了头，然后用 ',' 往回找。",
+        difficulty: "intermediate",
+        tags: ["vim", "nav"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "Missed me? Go back",
+            initialSelection: { line: 0, character: 5 }
+        },
+        trigger: {
+            type: "selection",
+            // 'Go' is at 11. 'Missed' is at 0.
+            // Let's say target is 'Missed' 'e' (index 4)
+            matchSelection: { line: 0, character: 4 }
+        },
+        hints: ["1. 'fe' 可能跳到了 'me' (index 8)", "2. 按 ',' 往回跳到 'Missed' 的 'e'"]
+    },
+    {
+        id: "v47-vim-n",
+        title: "Vim: 重复搜索 (n)",
+        description: "使用 '/' 搜索 'next'，然后用 'n' 跳转到最后一个匹配项。",
+        difficulty: "intermediate",
+        tags: ["vim", "nav"],
+        setup: {
+            fileType: "plaintext",
+            initialContent: "next one, next two, next three",
+            initialSelection: { line: 0, character: 0 }
+        },
+        trigger: {
+            type: "selection",
+            // 'next three' starts at 20
+            matchSelection: { line: 0, character: 20 }
+        },
+        hints: ["1. '/next' 回车", "2. 按 'n' 跳转直到最后一个"]
     }
 ];
